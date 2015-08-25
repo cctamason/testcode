@@ -1,33 +1,6 @@
-library(memisc)
-library(plyr)
-library(foreign)
-
-setwd("C:/Users/dell-pc/Dropbox/Tutoring/Char")
-main<-as.data.set(spss.system.file('main_2ndentry with dates.sav'))
-
-spss2date <- function(x) as.Date(x/86400, origin = "1582-10-14")
-main$intdate <- spss2date(main$intdate)
-
-main$uniqueid <- paste(main$hhid, "_", main$intdate, sep="")
-
-HHmem <- as.data.set(spss.system.file('Q11.sav'), stringsAsFactors=FALSE)
-
-# length(unique(HHmem$slno)) # 403
-# length(unique(main$slno)) # 402
-# HHmem$slno[!(HHmem$slno %in% main$slno)]
-# slno = 225 - hhid = 236 pairing is not in main
-# slno = 394 - hhid = 236 in both
-# HHmem[HHmem$slno==394,]
-# main$hhid[main$slno==394]
-# main$hhid <- as.numeric(main$hhid)
-# main$slno <- as.numeric(main$slno)
-# main[,c("slno","hhid")]
-
-HHmem_merge <- merge(HHmem, main[,c("uniqueid", "slno")], by="slno")
-
-# -----------------------------------------------------------------
-
-wdx1<-"\\C5 Field Operations data\\Folder Amal"
+#Creating dates of validity for each uniqueID, using X-1 Choleraphone distribution sheet from field station
+####must run creating a joint baseline file and Creating joint monthly visit file2 first
+wdx1<-"\\C5 Field Operations data\\X-1 Cholera phone distribution"
 setwd(paste(wdmain,wdx1,sep=""))
 
 x1_data <- read.csv2("X-1 Choleraphone distribution 31Jul15.csv")
@@ -47,12 +20,16 @@ x1_data$interval_check <- NA
 sort(x1_data$uniqueID[!(x1_data$uniqueID %in% baselineAll$uniqueID)])
 
 missing20_08_2015<-("100_2014-11-25", "109_2015-05-27", "118_2015-05-31", "126_2015-06-21", "129_2015-06-24", "144_2014-10-20", "16_2014-06-03", 
-"168_2015-05-08", "171_2014-10-24", "186_2015-05-24", "199_2015-06-01", "214_2015-06-05", "217_2014-10-31", "220_2014-06-11",
-"223_2015-04-17", "225_2015-06-28", "230_2014-08-15", "235_2014-09-16", "248_2014-08-07", "251_2014-08-19", "252_2014-06-01",
-"253_2014-08-26", "254_2014-09-25", "257_2015-05-23", "270_2015-06-12", "28_2014-09-12",  "280_2015-06-26", "295_2014-08-18",
-"300_2014-11-14", "322_2014-10-27", "330_2015-06-26", "332_2014-11-14", "333_2014-07-20", "35_2015-07-24",  "388_2015-07-11",
-"391_2014-11-14", "50_2015-05-29",  "60_2014-10-21",  "67_2014-06-05",  "78_2015-07-04",  "83_2014-09-12",  "85_2014-06-01", 
-"90_2015-07-04") 
+                    "168_2015-05-08", "171_2014-10-24", "186_2015-05-24", "199_2015-06-01", "214_2015-06-05", "217_2014-10-31", "220_2014-06-11",
+                    "223_2015-04-17", "225_2015-06-28", "230_2014-08-15", "235_2014-09-16", "248_2014-08-07", "251_2014-08-19", "252_2014-06-01",
+                    "253_2014-08-26", "254_2014-09-25", "257_2015-05-23", "270_2015-06-12", "28_2014-09-12",  "280_2015-06-26", "295_2014-08-18",
+                    "300_2014-11-14", "322_2014-10-27", "330_2015-06-26", "332_2014-11-14", "333_2014-07-20", "35_2015-07-24",  "388_2015-07-11",
+                    "391_2014-11-14", "50_2015-05-29",  "60_2014-10-21",  "67_2014-06-05",  "78_2015-07-04",  "83_2014-09-12",  "85_2014-06-01", 
+                    "90_2015-07-04") 
+
+baseline_not_in_X1<-sort(baselineAll$hhid[!(baselineAll$uniqueID %in% x1_data$uniqueID)])
+baseline_hhid_not_in_X1<-c(baseline_not_in_X1)
+sort(baseline_hhid_not_in_X1[!(MonthlyAll$]
 
 baselineAll$uniqueID[baselineAll$hhid==50]
 x1_data$uniqueID[x1_data$HHID==50]
@@ -145,6 +122,18 @@ x1_data$uniqueID[x1_data$HHID==388]
 baselineAll$uniqueID[baselineAll$hhid==391]
 x1_data$uniqueID[x1_data$HHID==391]
 
+#change dates in X-1 that are off by a keystroke to match baseline
+x1_data$uniqueID<-ifelse(x1_data$uniqueID=="83_2014-09-12","83_2014-09-11",x1_data$uniqueID)
+x1_data$uniqueID<-ifelse(x1_data$uniqueID=="100_2014-11-25","100_2014-11-24",x1_data$uniqueID)
+x1_data$uniqueID<-ifelse(x1_data$uniqueID=="171_2014-10-14","171_2014-11-14",x1_data$uniqueID)
+x1_data$uniqueID<-ifelse(x1_data$uniqueID=="230_2014-08-15","230_2014-08-16",x1_data$uniqueID)
+x1_data$uniqueID<-ifelse(x1_data$uniqueID=="235_2014-09-16","235_2014-09-15",x1_data$uniqueID)
+x1_data$uniqueID<-ifelse(x1_data$uniqueID=="248_2014-08-07","248_2014-07-07",x1_data$uniqueID)
+x1_data$uniqueID<-ifelse(x1_data$uniqueID=="28_2014-09-12","28_2014-09-11",x1_data$uniqueID)
+x1_data$uniqueID<-ifelse(x1_data$uniqueID=="295_2014-08-18","295_2014-08-08",x1_data$uniqueID)
+
+#change dates in baseline that are incorrect, in order to match with X-1
+baselineAll$uniqueID<-ifelse(baselineAll$uniqueID=="333_2014-04-20","333_2014-07-20",baselineAll$uniqueID)
 
 View(baselineAll[,c("hhid","uniqueID")])
 
@@ -158,14 +147,14 @@ for (i in 1:length(unique(x1_data$HHID))){
   
   subset <- x1_data[which(x1_data$HHID==unique(x1_data$HHID)[i]),]
   subset <- subset[order(subset$base_date),]  
-    
+  
   for (j in 1:(nrow(subset)-1)) {
     subset$interval_check[j] <- subset$with_date[j] < subset$base_date[j+1]
   }
-
+  
   subset$interval_check[j+1] <- TRUE
   final_x1_data <- rbind(final_x1_data, subset)
-    
+  
 }
 
 # final_x1_data[which(final_x1_data$interval_check==F),]
@@ -182,9 +171,7 @@ monthly2$uniqueid <- NA
 monthly2$uniqueid[which(monthly2$hh_id==monthly2$hh_id[1])] <- 
   
   final_x1_data$uniqueid[which((monthly2$hh_id[1]==final_x1_data$HHID) &   
-          (monthly2$date[1] >= final_x1_data$base_date[which(final_x1_data$HHID==monthly2$hh_id[1])] & 
-          (monthly2$date[1] <= final_x1_data$with_date[which(final_x1_data$HHID==monthly2$hh_id[1])])))      
-]
-                    
-
+                                 (monthly2$date[1] >= final_x1_data$base_date[which(final_x1_data$HHID==monthly2$hh_id[1])] & 
+                                    (monthly2$date[1] <= final_x1_data$with_date[which(final_x1_data$HHID==monthly2$hh_id[1])])))      
+                         ]
 
