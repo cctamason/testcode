@@ -131,7 +131,7 @@ water_useAll<-rbind(water_use1,water_use47,water_use69)
 
 
 
-#----------------------------------------------------------------------------
+#recoding water sources
 #use with()  for the following so i don't have to repeat datafram names$
 #recode q14 so that 1 = pipe/tap, 2= hand pump, 3= well with bucket
 water_useAll$q14_recoded<- with(water_useAll, ifelse(q14==1,1, ifelse(q14==2,1, ifelse(q14==3,2,                       

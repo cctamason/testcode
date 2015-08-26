@@ -27,7 +27,7 @@ HHmem_merge <- merge(HHmem, main[,c("uniqueid", "slno")], by="slno")
 
 # -----------------------------------------------------------------
 
-wdx1<-"\\C5 Field Operations data\\Folder Amal"
+wdx1<-"\\C5 Field Operations data\\X-1 Cholera phone distribution"
 setwd(paste(wdmain,wdx1,sep=""))
 
 x1_data <- read.csv2("X-1 Choleraphone distribution 31Jul15.csv")

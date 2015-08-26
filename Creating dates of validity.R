@@ -27,9 +27,6 @@ missing20_08_2015<-("100_2014-11-25", "109_2015-05-27", "118_2015-05-31", "126_2
                     "391_2014-11-14", "50_2015-05-29",  "60_2014-10-21",  "67_2014-06-05",  "78_2015-07-04",  "83_2014-09-12",  "85_2014-06-01", 
                     "90_2015-07-04") 
 
-baseline_not_in_X1<-sort(baselineAll$hhid[!(baselineAll$uniqueID %in% x1_data$uniqueID)])
-baseline_hhid_not_in_X1<-c(baseline_not_in_X1)
-sort(baseline_hhid_not_in_X1[!(MonthlyAll$]
 
 baselineAll$uniqueID[baselineAll$hhid==50]
 x1_data$uniqueID[x1_data$HHID==50]
@@ -135,7 +132,18 @@ x1_data$uniqueID<-ifelse(x1_data$uniqueID=="295_2014-08-18","295_2014-08-08",x1_
 #change dates in baseline that are incorrect, in order to match with X-1
 baselineAll$uniqueID<-ifelse(baselineAll$uniqueID=="333_2014-04-20","333_2014-07-20",baselineAll$uniqueID)
 
-View(baselineAll[,c("hhid","uniqueID")])
+#Check to see which baseline entries are not in x1 
+baseline_hhid_not_in_X1<-c(sort(!baselineAll$hhid[(baselineAll$uniqueID %in% x1_data$uniqueID)]))
+sort(baseline_hhid_not_in_X1[!(baseline_hhid_not_in_X1%in% MonthlyAll$hhid)])
+#baseline_in_X1<-c(sort(baselineAll$hhid[(baselineAll$uniqueID %in% x1_data$uniqueID)]))
+# sort(baseline_in_X1[!(baseline_in_X1%in% MonthlyAll$hhid)])
+
+#check which baseline entries are in x1, can be used for analysis
+baseline_in_X1<-c(sort(baselineAll$uniqueID[(baselineAll$uniqueID %in% x1_data$uniqueID)]))
+
+# View(baselineAll[,c("hhid","uniqueID")])
+
+
 
 baselineAll$uniqueID
 # for (i in 1:10) { do something that involves i}
@@ -160,18 +168,37 @@ for (i in 1:length(unique(x1_data$HHID))){
 # final_x1_data[which(final_x1_data$interval_check==F),]
 
 
-# ---------------------------------------------------------------------------------
+# First need to fix monthlyall date typos-----------------------------------------------------------------
+setwd("C:\\Users\\zrc340\\Desktop\\Dropbox\\C5 data\\C5 Field Operations data\\X-2 Monthly visit tracking sheet")
+X2<-read.csv2("X-2 monthly visits 4Jul15.csv")
 
-monthly2<-read.csv2("C5_Monthlysurvey2.csv", stringsAsFactors=FALSE)
-monthly2$date <- as.Date(paste(monthly2$year, "-", monthly2$month, "-", monthly2$day, sep=""))
+X2$date<-as.Date(X2$Date.of.monthly.visit, "%d.%m.%y")
+X2$uniqueDate<-paste(X2$HHID,"-",X2$date,sep="")
 
-# monthly2[,c("hh_id", "date")]
+sort(monthly2$visitdate)
 
-monthly2$uniqueid <- NA
-monthly2$uniqueid[which(monthly2$hh_id==monthly2$hh_id[1])] <- 
+###############look into the following mess tomorrow##########################
+# MonthlyAll$date <- with(MonthlyAll, as.Date(paste(year, "-", month, "-", day, sep="")))
+# MonthlyAll$uniqueDate <- paste(MonthlyAll$hhid,"-",MonthlyAll$date,sep="")
+# 
+# sort(MonthlyAll$uniquedate[!(MonthlyAll$uniqueDate %in% X2$uniqueDate)])
+# 
+# monthlyall_not_in_X2<-sort(MonthlyAll$hhid[!(MonthlyAll$uniqueDate %in% X2$uniqueDate)])
+# X2_not_in_monthlyall<-sort(X2$HHID[!(X2$uniqueDate %in% MonthlyAll$uniqueDate)])
+# 
+# X2$HHID[(X2_not_in_monthlyall %in% monthlyall_not_in_X2)]
+# 
+# Monthly_uniqueDates<-
+# X2dates_uniqueDates
+
+
+######################################################
+
+MonthlyAll$uniqueid <- NA
+MonthlyAll$uniqueid[which(MonthlyAll$hh_id==MonthlyAll$hh_id[1])] <- 
   
-  final_x1_data$uniqueid[which((monthly2$hh_id[1]==final_x1_data$HHID) &   
-                                 (monthly2$date[1] >= final_x1_data$base_date[which(final_x1_data$HHID==monthly2$hh_id[1])] & 
-                                    (monthly2$date[1] <= final_x1_data$with_date[which(final_x1_data$HHID==monthly2$hh_id[1])])))      
+  final_x1_data$uniqueid[which((MonthlyAll$hh_id[1]==final_x1_data$HHID) &   
+                                 (MonthlyAll$date[1] >= final_x1_data$base_date[which(final_x1_data$HHID==MonthlyAll$hh_id[1])] & 
+                                    (MonthlyAll$date[1] <= final_x1_data$with_date[which(final_x1_data$HHID==MonthlyAll$hh_id[1])])))      
                          ]
 
